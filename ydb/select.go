@@ -3,6 +3,7 @@ package ydb
 import (
 	"context"
 	"time"
+    "fmt"
 
 	"github.com/ydb-platform/ydb-go-sdk/v3/table"
 	"github.com/ydb-platform/ydb-go-sdk/v3/table/result/named"
@@ -28,7 +29,7 @@ func Select() ([]Table, error ){
     defer cRes.cancel()
 	defer cRes.db.Close(cRes.ctx)
 
-    cRes.db.Table().Do(cRes.ctx, func(ctx context.Context, s table.Session) (err error) {
+    err = cRes.db.Table().Do(cRes.ctx, func(ctx context.Context, s table.Session) (err error) {
         _, res, err := s.Execute(ctx, table.DefaultTxControl(), "SELECT * FROM " + dbName + ";", nil)
         if err != nil {
             return err
@@ -52,5 +53,8 @@ func Select() ([]Table, error ){
         }
         return res.Err()
     })
+    if err != nil {
+        return resYDB, fmt.Errorf("NO GET DATA")
+    }
     return resYDB, nil
 }
