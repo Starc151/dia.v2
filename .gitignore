@@ -1,5 +1,6 @@
-token
+ydb/token
 .vscode
+task.txt
 
 # Binaries for programs and plugins
 *.apk

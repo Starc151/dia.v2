@@ -13,6 +13,6 @@ func main() {
 	window := app.NewWindow("Dia")
 	icon, _ := fyne.LoadResourceFromPath("img/icon.png")
 	app.SetIcon(icon)
-
+	
 	window.ShowAndRun()
 }
