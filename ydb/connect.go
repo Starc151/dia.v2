@@ -14,22 +14,19 @@ type Connected struct {
 	ctx	context.Context
 	cancel context.CancelFunc
 }
-func connect() (*Connected, error) {
-	cRes := &Connected{}
-
-
+func (c *Connected) connect() error {
 	f, err := os.ReadFile("ydb/token/dsn.txt")
 	if err != nil {
-		return cRes, fmt.Errorf("INVALID KEY")
+		return fmt.Errorf("ошибка файла ключей")
 	}
 	dsn := string(f)
 	
-	cRes.ctx, cRes.cancel = context.WithCancel(context.Background())
-	cRes.db, err = ydb.Open(cRes.ctx, dsn,
+	c.ctx, c.cancel = context.WithCancel(context.Background())
+	c.db, err = ydb.Open(c.ctx, dsn,
 		yc.WithServiceAccountKeyFileCredentials("ydb/token/authorized_key.txt"),
 	)
 	if err != nil {
-		return cRes, fmt.Errorf("NO CONNECT")
+		return fmt.Errorf("нет соединения")
 	}
-	return cRes, nil
+	return nil
 }

@@ -9,16 +9,16 @@ import (
 	"github.com/ydb-platform/ydb-go-sdk/v3/table/types"
 )
 
-func Insert(dataInsert map[string]float64) error {
-	cRes, err := connect()
+func (c *Connected) Insert(dataInsert map[string]float64, dbName string) error {
+	timeNow := uint32(time.Now().Unix())
+	err := c.connect()
     if err != nil {
-        return err
+        return err 
     }
-    defer cRes.cancel()
-	defer cRes.db.Close(cRes.ctx)
-	dateTime := uint32(time.Now().Unix())+10800 //поправка на часовой пояс Мск
-	dbName := "result_bolus"
-	err = cRes.db.Table().DoTx(cRes.ctx,
+	defer c.cancel()
+	defer c.db.Close(c.ctx)
+
+	err = c.db.Table().DoTx(c.ctx,
 		func(ctx context.Context, tx table.TransactionActor) (err error) {
 			res, err := tx.Execute(ctx, `
 			DECLARE $Date_Time AS Datetime;
@@ -29,7 +29,7 @@ func Insert(dataInsert map[string]float64) error {
 			VALUES ( $Date_Time, $Bolus, $Current_Glucose, $Bread_Unit );
 		`,
 				table.NewQueryParameters(
-					table.ValueParam("$Date_Time", types.DatetimeValue(dateTime)),
+					table.ValueParam("$Date_Time", types.DatetimeValue(timeNow)),
 					table.ValueParam("$Bolus", types.FloatValue(float32(dataInsert["Bolus"]))),
 					table.ValueParam("$Current_Glucose", types.FloatValue(float32(dataInsert["Current_Glucose"]))),
 					table.ValueParam("$Bread_Unit", types.FloatValue(float32(dataInsert["Bread_Unit"]))),
@@ -45,7 +45,7 @@ func Insert(dataInsert map[string]float64) error {
 		}, table.WithIdempotent(),
 	)
 	if err != nil {
-		return fmt.Errorf("RECORDING FAIlED")
+		return fmt.Errorf("ошибка записи")
 	}
 	return nil
 }
