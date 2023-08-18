@@ -15,7 +15,8 @@ type Connected struct {
 	cancel context.CancelFunc
 }
 func (c *Connected) connect() error {
-	f, err := os.ReadFile("ydb/token/dsn.txt")
+	path := "pkgs/ydb/token/"
+	f, err := os.ReadFile(path + "dsn.txt")
 	if err != nil {
 		return fmt.Errorf("ошибка файла ключей")
 	}
@@ -23,7 +24,7 @@ func (c *Connected) connect() error {
 	
 	c.ctx, c.cancel = context.WithCancel(context.Background())
 	c.db, err = ydb.Open(c.ctx, dsn,
-		yc.WithServiceAccountKeyFileCredentials("ydb/token/authorized_key.txt"),
+		yc.WithServiceAccountKeyFileCredentials(path + "authorized_key.txt"),
 	)
 	if err != nil {
 		return fmt.Errorf("нет соединения")
