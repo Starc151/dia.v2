@@ -6,13 +6,15 @@ package main
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"github.com/Starc151/dia.v2/pkgs/apk"
 )
 
 func main() {
 	app := app.New()
-	window := app.NewWindow("Dia")
 	icon, _ := fyne.LoadResourceFromPath("img/icon.png")
 	app.SetIcon(icon)
 
-	window.ShowAndRun()
+	apk := apk.Apk{}
+	apk.LoadApk(app)
+	app.Run()
 }
