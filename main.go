@@ -14,7 +14,6 @@ func main() {
 	icon, _ := fyne.LoadResourceFromPath("img/icon.png")
 	app.SetIcon(icon)
 
-	apk := apk.Apk{}
-	apk.LoadApk(app)
+	apk.NewGlucometr(app)
 	app.Run()
 }

@@ -14,6 +14,11 @@ type Apk struct {
 	entry  *canvas.Text
 	btn *widget.Button
 	window  fyne.Window
+	glucometr struct {
+		glucose *canvas.Text
+		bUint *canvas.Text
+		bolus *canvas.Text
+	}
 }
 
 func (a *Apk) character(str string) {
@@ -40,7 +45,7 @@ func (a *Apk) addBtn(text string, action func()) *widget.Button {
 	return a.btn
 }
 
-func (a *Apk) input(text, position string) *canvas.Text {
+func setAlign (position string) int {
 	positionNum := 1 
 	switch position {
 	case "left":
@@ -48,16 +53,17 @@ func (a *Apk) input(text, position string) *canvas.Text {
 	case "right":
 		positionNum = 2
 	}
-	a.entry = &canvas.Text{}
-	a.entry.Text = text
-	a.entry.Color = color.White
-	a.entry.Alignment = fyne.TextAlign(positionNum)
-	a.entry.TextSize = 25
-	return a.entry
+	return positionNum
 }
 
-func (a *Apk) LoadApk(app fyne.App) {
-	a.window = app.NewWindow("Dia")
+func (a *Apk) setCanvasText(field *canvas.Text, text, position string) *canvas.Text {
+	field = &canvas.Text{Color: color.White, TextSize: 25}
+	field.Text = text
+	field.Alignment = fyne.TextAlign(setAlign(position))
+	return field
+}
+
+func (a *Apk) loadApk() {
 	border := widget.NewLabel("  ")
 
 	tabs := container.NewAppTabs(
@@ -101,5 +107,15 @@ func (a *Apk) LoadApk(app fyne.App) {
 	)
 
 	a.window.SetContent(tabs)
+}
+
+func NewGlucometr(app fyne.App) {
+	a := Apk{}
+	a.window = app.NewWindow("Dia")
+	a.glucometr.bUint = a.setCanvasText()
+	a.glucometr.glucose = &canvas.Text{}
+	a.glucometr.bolus = &canvas.Text{}
+
+	a.loadApk()
 	a.window.Show()
 }
