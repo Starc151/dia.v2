@@ -21,21 +21,18 @@ type Apk struct {
 	}
 }
 
-func (a *Apk) character(str string) {
-	// a.display(c.equation + string(char))
-}
-
 func (a *Apk) digitBtn(number int) *widget.Button {
 	str := strconv.Itoa(number)
 	return a.addBtn(str, func() {
-		a.character(str)
+		a.setEntry(str)
 	})
 }
 
-func (a *Apk) charBtn(str string) *widget.Button {
-	return a.addBtn(str, func() {
-		a.character(str)
-	})
+func (a *Apk) charBtn(text string) {
+	a.glucometr.glucose.Text = text
+	a.glucometr.glucose.Refresh()
+	a.entry.Text = "_"
+	a.entry.Refresh()
 }
 
 func (a *Apk) addBtn(text string, action func()) *widget.Button {
@@ -45,9 +42,32 @@ func (a *Apk) addBtn(text string, action func()) *widget.Button {
 	return a.btn
 }
 
-func (a *Apk) setText(text string) {
-	a.glucometr.glucose.Text = text
+func (a *Apk) setEntry(text string) {
+	if a.entry.Text == "_" {
+		a.entry.Text = ""
+	}
+	if len(a.entry.Text) < 4 {
+		a.entry.Text += text
+	}
+	a.entry.Refresh()
 }
+
+func (a *Apk) clear() {
+	a.entry.Text = "_"
+	a.entry.Refresh()
+}
+
+func (a *Apk) backSpace() {
+	len := len(a.entry.Text)
+	if len == 1 {
+		a.entry.Text = "_"
+		a.entry.Refresh()
+		return
+	}
+	a.entry.Text = a.entry.Text[:len-1]
+	a.entry.Refresh()
+}
+
 func setAlign (position string) int {
 	positionNum := 1 
 	switch position {
@@ -85,10 +105,9 @@ func (a *Apk) loadApk() {
 					container.NewGridWithColumns(1,
 						a.glucometr.bolus),
 					container.NewGridWithColumns(3,
-						a.addBtn("GL", func() {a.setText("1234")}),
-						// a.charBtn("GL"),
-						a.charBtn("BU"),
-						a.charBtn("OK")),
+						a.addBtn("GL", func() {a.charBtn(a.glucometr.glucose.Text)}),
+						a.addBtn("GL", func() {a.charBtn(a.glucometr.glucose.Text)}),
+						a.addBtn("C", func() {a.clear()})),
 					container.NewGridWithColumns(3,
 						a.digitBtn(7),
 						a.digitBtn(8),
@@ -102,9 +121,11 @@ func (a *Apk) loadApk() {
 						a.digitBtn(2),
 						a.digitBtn(3)),
 					container.NewGridWithColumns(3,
-						a.charBtn("<"),
+						a.addBtn("<", func() {a.backSpace()}),
 						a.digitBtn(0),
-						a.charBtn(".,")),
+						a.addBtn(".", func() {a.setEntry(".")})),						
+					// container.NewGridWithColumns(1,
+					// 	a.charBtn("GET BOLUS")),
 				),
 			),
 		),
