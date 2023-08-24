@@ -45,6 +45,9 @@ func (a *Apk) addBtn(text string, action func()) *widget.Button {
 	return a.btn
 }
 
+func (a *Apk) setText(text string) {
+	a.glucometr.glucose.Text = text
+}
 func setAlign (position string) int {
 	positionNum := 1 
 	switch position {
@@ -56,11 +59,11 @@ func setAlign (position string) int {
 	return positionNum
 }
 
-func (a *Apk) setCanvasText(field *canvas.Text, text, position string) *canvas.Text {
-	field = &canvas.Text{Color: color.White, TextSize: 25}
-	field.Text = text
-	field.Alignment = fyne.TextAlign(setAlign(position))
-	return field
+func (a *Apk) setCanvasText(text, position string) *canvas.Text {
+	canvasText := &canvas.Text{Color: color.White, TextSize: 25}
+	canvasText.Text = text
+	canvasText.Alignment = fyne.TextAlign(setAlign(position))
+	return canvasText
 }
 
 func (a *Apk) loadApk() {
@@ -71,18 +74,19 @@ func (a *Apk) loadApk() {
 			container.NewBorder(nil, nil, border, border,
 				container.NewGridWithColumns(1,
 					container.NewGridWithColumns(2,
-						a.input("Entry:", "left"),
-						a.input("_", "right")),
+						a.setCanvasText("Entry:", "left"),
+						a.entry),
 					container.NewGridWithColumns(2,
-						a.input("Glucose:", "left"),
-						a.input("0", "right")),
+						a.setCanvasText("Glucose:", "left"),
+						a.glucometr.glucose),
 					container.NewGridWithColumns(2,
-						a.input("B Unit:", "left"),
-						a.input("0", "right")),
+						a.setCanvasText("B Unit:", "left"),
+						a.glucometr.bUint),
 					container.NewGridWithColumns(1,
-						a.input("BOLUS: 3", "central")),
+						a.glucometr.bolus),
 					container.NewGridWithColumns(3,
-						a.charBtn("GL"),
+						a.addBtn("GL", func() {a.setText("1234")}),
+						// a.charBtn("GL"),
 						a.charBtn("BU"),
 						a.charBtn("OK")),
 					container.NewGridWithColumns(3,
@@ -112,9 +116,11 @@ func (a *Apk) loadApk() {
 func NewGlucometr(app fyne.App) {
 	a := Apk{}
 	a.window = app.NewWindow("Dia")
-	a.glucometr.bUint = a.setCanvasText()
-	a.glucometr.glucose = &canvas.Text{}
-	a.glucometr.bolus = &canvas.Text{}
+	a.entry = a.setCanvasText("_", "right")
+	a.glucometr.bUint = a.setCanvasText("0", "right")
+	a.glucometr.glucose = a.setCanvasText("0", "right")
+	a.glucometr.bolus = a.setCanvasText("", "right")
+
 
 	a.loadApk()
 	a.window.Show()
