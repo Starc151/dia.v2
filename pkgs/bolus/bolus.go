@@ -1,17 +1,19 @@
 package bolus
 
+import "strconv"
+
 const (
 	lowerGlucose float64 = 7.0
 	upperGlucose float64 = 9.0
-	idealGlucose = (lowerGlucose + upperGlucose) / 2
+	idealGlucose         = (lowerGlucose + upperGlucose) / 2
 )
 
 type Glucometr struct {
-	bolus float64
+	bolus   float64
 	glucose float64
-	bUnit float64
+	bUnit   float64
 	sensiti float64 // Чувствительность к инсулину
-	carb float64  // Углеводный коэффициент (ед / 1хе)
+	carb    float64 // Углеводный коэффициент (ед / 1хе)
 }
 
 func (g *Glucometr) bolusForFood() {
@@ -24,22 +26,27 @@ func (g *Glucometr) bolusForCorrect() {
 
 func (g *Glucometr) fullBolus() {
 	g.bolusForFood()
-	bolus := g.bolus
+	tempBolus := g.bolus
 	g.bolusForCorrect()
-	g.bolus += bolus
+	g.bolus += tempBolus
 }
 
-func (g *Glucometr) Bolus(glucose, bUnit float64) float64 {
+func (g *Glucometr) setBolus() {
 	g.coeffs()
-	g.glucose = glucose
-	g.bUnit = bUnit
 	switch {
-	case glucose == 0:
+	case g.glucose == 0:
 		g.bolusForFood()
-	case bUnit == 0:
+	case g.bUnit == 0:
 		g.bolusForCorrect()
 	default:
 		g.fullBolus()
 	}
+}
+
+func SetGlucometr(glucose, bUnit string) float64 {
+	g := Glucometr{}
+	g.glucose, _ = strconv.ParseFloat(glucose, 64)
+	g.bUnit, _ = strconv.ParseFloat(bUnit, 64)
+	g.setBolus()
 	return g.bolus
 }

@@ -1,12 +1,14 @@
 package apk
 
 import (
+	"fmt"
 	"image/color"
 	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Starc151/dia.v2/pkgs/bolus"
 )
 
 type Apk struct {
@@ -15,7 +17,7 @@ type Apk struct {
 	window    fyne.Window
 	glucometr struct {
 		glucose *canvas.Text
-		bUint   *canvas.Text
+		bUnit   *canvas.Text
 		bolus   *canvas.Text
 	}
 }
@@ -54,11 +56,11 @@ func (a *Apk) setEntry(text string) {
 func (a *Apk) clear() {
 	a.entry.Text = "_"
 	a.glucometr.glucose.Text = "0"
-	a.glucometr.bUint.Text = "0"
+	a.glucometr.bUnit.Text = "0"
 	a.glucometr.bolus.Text = ""
 	a.entry.Refresh()
 	a.glucometr.glucose.Refresh()
-	a.glucometr.bUint.Refresh()
+	a.glucometr.bUnit.Refresh()
 	a.glucometr.bolus.Refresh()
 }
 
@@ -92,14 +94,19 @@ func (a *Apk) setCanvasText(text, position string) *canvas.Text {
 }
 
 func (a *Apk) getBolus() {
-	a.glucometr.bolus.Text = "Bolus OK"
+	glucose := a.glucometr.glucose.Text
+	bUnit := a.glucometr.bUnit.Text
+	bolus := bolus.SetGlucometr(glucose, bUnit)
+
+	a.glucometr.bolus.Text = fmt.Sprintf("Bolus: %.1f", bolus)
+	a.glucometr.bolus.Refresh()
 }
 
 func NewGlucometr(app fyne.App) {
 	a := Apk{}
 	a.window = app.NewWindow("Dia")
 	a.entry = a.setCanvasText("_", "right")
-	a.glucometr.bUint = a.setCanvasText("0", "right")
+	a.glucometr.bUnit = a.setCanvasText("0", "right")
 	a.glucometr.glucose = a.setCanvasText("0", "right")
 	a.glucometr.bolus = a.setCanvasText("", "centr")
 
