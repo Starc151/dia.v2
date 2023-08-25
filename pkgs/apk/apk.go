@@ -6,18 +6,17 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
-	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 )
 
 type Apk struct {
-	entry  *canvas.Text
-	btn *widget.Button
-	window  fyne.Window
+	entry     *canvas.Text
+	btn       *widget.Button
+	window    fyne.Window
 	glucometr struct {
 		glucose *canvas.Text
-		bUint *canvas.Text
-		bolus *canvas.Text
+		bUint   *canvas.Text
+		bolus   *canvas.Text
 	}
 }
 
@@ -28,9 +27,9 @@ func (a *Apk) digitBtn(number int) *widget.Button {
 	})
 }
 
-func (a *Apk) charBtn(text string) {
-	a.glucometr.glucose.Text = text
-	a.glucometr.glucose.Refresh()
+func (a *Apk) setGlucometr(text string, field *canvas.Text) {
+	field.Text = text
+	field.Refresh()
 	a.entry.Text = "_"
 	a.entry.Refresh()
 }
@@ -54,7 +53,13 @@ func (a *Apk) setEntry(text string) {
 
 func (a *Apk) clear() {
 	a.entry.Text = "_"
+	a.glucometr.glucose.Text = "0"
+	a.glucometr.bUint.Text = "0"
+	a.glucometr.bolus.Text = ""
 	a.entry.Refresh()
+	a.glucometr.glucose.Refresh()
+	a.glucometr.bUint.Refresh()
+	a.glucometr.bolus.Refresh()
 }
 
 func (a *Apk) backSpace() {
@@ -68,8 +73,8 @@ func (a *Apk) backSpace() {
 	a.entry.Refresh()
 }
 
-func setAlign (position string) int {
-	positionNum := 1 
+func setAlign(position string) int {
+	positionNum := 1
 	switch position {
 	case "left":
 		positionNum = 0
@@ -86,52 +91,8 @@ func (a *Apk) setCanvasText(text, position string) *canvas.Text {
 	return canvasText
 }
 
-func (a *Apk) loadApk() {
-	border := widget.NewLabel("  ")
-
-	tabs := container.NewAppTabs(
-		container.NewTabItem("BOLUS",
-			container.NewBorder(nil, nil, border, border,
-				container.NewGridWithColumns(1,
-					container.NewGridWithColumns(2,
-						a.setCanvasText("Entry:", "left"),
-						a.entry),
-					container.NewGridWithColumns(2,
-						a.setCanvasText("Glucose:", "left"),
-						a.glucometr.glucose),
-					container.NewGridWithColumns(2,
-						a.setCanvasText("B Unit:", "left"),
-						a.glucometr.bUint),
-					container.NewGridWithColumns(1,
-						a.glucometr.bolus),
-					container.NewGridWithColumns(3,
-						a.addBtn("GL", func() {a.charBtn(a.glucometr.glucose.Text)}),
-						a.addBtn("GL", func() {a.charBtn(a.glucometr.glucose.Text)}),
-						a.addBtn("C", func() {a.clear()})),
-					container.NewGridWithColumns(3,
-						a.digitBtn(7),
-						a.digitBtn(8),
-						a.digitBtn(9)),
-					container.NewGridWithColumns(3,
-						a.digitBtn(4),
-						a.digitBtn(5),
-						a.digitBtn(6)),
-					container.NewGridWithColumns(3,
-						a.digitBtn(1),
-						a.digitBtn(2),
-						a.digitBtn(3)),
-					container.NewGridWithColumns(3,
-						a.addBtn("<", func() {a.backSpace()}),
-						a.digitBtn(0),
-						a.addBtn(".", func() {a.setEntry(".")})),						
-					// container.NewGridWithColumns(1,
-					// 	a.charBtn("GET BOLUS")),
-				),
-			),
-		),
-	)
-
-	a.window.SetContent(tabs)
+func (a *Apk) getBolus() {
+	a.glucometr.bolus.Text = "Bolus OK"
 }
 
 func NewGlucometr(app fyne.App) {
@@ -140,8 +101,7 @@ func NewGlucometr(app fyne.App) {
 	a.entry = a.setCanvasText("_", "right")
 	a.glucometr.bUint = a.setCanvasText("0", "right")
 	a.glucometr.glucose = a.setCanvasText("0", "right")
-	a.glucometr.bolus = a.setCanvasText("", "right")
-
+	a.glucometr.bolus = a.setCanvasText("", "centr")
 
 	a.loadApk()
 	a.window.Show()
