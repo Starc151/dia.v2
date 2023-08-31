@@ -104,6 +104,7 @@ func (a *Apk) getBolus() {
 
 func NewGlucometr(app fyne.App) {
 	a := Apk{}
+	app.Settings().SetTheme(&myTheme{})
 	a.window = app.NewWindow("Dia")
 	a.entry = a.setCanvasText("_", "right")
 	a.glucometr.bUnit = a.setCanvasText("0", "right")
