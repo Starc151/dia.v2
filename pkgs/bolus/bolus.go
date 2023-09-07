@@ -1,6 +1,12 @@
 package bolus
 
-import "strconv"
+import (
+	"fmt"
+	"math"
+	"strconv"
+
+	"github.com/Starc151/dia.v2/pkgs/ydb"
+)
 
 const (
 	lowerGlucose float64 = 7.0
@@ -8,7 +14,7 @@ const (
 	idealGlucose         = (lowerGlucose + upperGlucose) / 2
 )
 
-type Glucometr struct {
+type glucometr struct {
 	bolus   float64
 	glucose float64
 	bUnit   float64
@@ -16,22 +22,22 @@ type Glucometr struct {
 	carb    float64 // Углеводный коэффициент (ед / 1хе)
 }
 
-func (g *Glucometr) bolusForFood() {
+func (g *glucometr) bolusForFood() {
 	g.bolus = g.carb * g.bUnit
 }
 
-func (g *Glucometr) bolusForCorrect() {
+func (g *glucometr) bolusForCorrect() {
 	g.bolus = (g.glucose - idealGlucose) / g.sensiti
 }
 
-func (g *Glucometr) fullBolus() {
+func (g *glucometr) fullBolus() {
 	g.bolusForFood()
 	tempBolus := g.bolus
 	g.bolusForCorrect()
 	g.bolus += tempBolus
 }
 
-func (g *Glucometr) setBolus() {
+func (g *glucometr) setBolus() {
 	g.coeffs()
 	switch {
 	case g.glucose == 0:
@@ -41,12 +47,24 @@ func (g *Glucometr) setBolus() {
 	default:
 		g.fullBolus()
 	}
+	g.bolus = math.Round(g.bolus*10)/10
 }
 
-func SetGlucometr(glucose, bUnit string) float64 {
-	g := Glucometr{}
+func (g *glucometr) insert() {
+	glucometrParams := make(map[string]float64)
+	glucometrParams["glucose"] = g.glucose
+	glucometrParams["bUnit"] = g.bUnit
+	glucometrParams["bolus"] = g.bolus
+	
+	connectDB := ydb.Connected{}
+	connectDB.Insert(glucometrParams)
+}
+
+func SetGlucometr(glucose, bUnit string) (string, error) {
+	g := glucometr{}
 	g.glucose, _ = strconv.ParseFloat(glucose, 64)
 	g.bUnit, _ = strconv.ParseFloat(bUnit, 64)
 	g.setBolus()
-	return g.bolus
+	g.insert()
+	return fmt.Sprintf("Bolus: %.1f", g.bolus), nil
 }

@@ -1,7 +1,6 @@
 package apk
 
 import (
-	"fmt"
 	"image/color"
 	"strconv"
 
@@ -14,10 +13,13 @@ import (
 type glucometr struct {
 	entry     *canvas.Text
 	btn       *widget.Button
-	window    fyne.Window
+	
 	glucose *canvas.Text
 	bUnit   *canvas.Text
 	bolus   *canvas.Text
+
+	window    fyne.Window
+	err error
 }
 
 func (g *glucometr) digitBtn(number int) *widget.Button {
@@ -92,11 +94,7 @@ func (g *glucometr) setCanvasText(text, position string) *canvas.Text {
 }
 
 func (g *glucometr) getBolus() {
-	glucose := g.glucose.Text
-	bUnit := g.bUnit.Text
-	bolus := bolus.SetGlucometr(glucose, bUnit)
-
-	g.bolus.Text = fmt.Sprintf("Bolus: %.1f", bolus)
+	g.bolus.Text, g.err = bolus.SetGlucometr(g.glucose.Text, g.bUnit.Text)
 	g.bolus.Refresh()
 }
 

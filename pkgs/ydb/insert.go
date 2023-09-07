@@ -9,8 +9,12 @@ import (
 	"github.com/ydb-platform/ydb-go-sdk/v3/table/types"
 )
 
-func (c *Connected) Insert(dataInsert map[string]float64, dbName string) error {
-	timeNow := uint32(time.Now().Unix())
+func (c *Connected) Insert(dataInsert map[string]float64) error {
+	loc, _ := time.LoadLocation("Europe/Moscow")
+	time.Local = loc
+	dbName := "result_bolus"
+	timeNow := uint32(time.Now().Local().Unix())
+	fmt.Print(timeNow)
 	err := c.connect()
     if err != nil {
         return err 
@@ -30,9 +34,9 @@ func (c *Connected) Insert(dataInsert map[string]float64, dbName string) error {
 		`,
 				table.NewQueryParameters(
 					table.ValueParam("$Date_Time", types.DatetimeValue(timeNow)),
-					table.ValueParam("$Bolus", types.FloatValue(float32(dataInsert["Bolus"]))),
-					table.ValueParam("$Current_Glucose", types.FloatValue(float32(dataInsert["Current_Glucose"]))),
-					table.ValueParam("$Bread_Unit", types.FloatValue(float32(dataInsert["Bread_Unit"]))),
+					table.ValueParam("$Bolus", types.FloatValue(float32(dataInsert["bolus"]))),
+					table.ValueParam("$Current_Glucose", types.FloatValue(float32(dataInsert["glucose"]))),
+					table.ValueParam("$Bread_Unit", types.FloatValue(float32(dataInsert["bUnit"]))),
 				),
 			)
 			if err != nil {
