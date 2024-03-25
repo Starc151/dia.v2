@@ -2,7 +2,7 @@ package bolus
 
 import "time"
 
-func (g *Glucometr) coeffs() {
+func (g *glucometr) coeffs() {
 	timeNow := time.Now().Format("15:04")
 	if "00:00" <= timeNow && timeNow <= "10:30"{
 		g.sensiti  = 4.0 

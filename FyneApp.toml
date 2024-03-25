@@ -1,5 +1,9 @@
 [Details]
   Name = "Dia"
   ID = "ru.dia.android"
+<<<<<<< HEAD
   Version = "1.0.0"
+=======
+  Version = "1.1.0"
+>>>>>>> 1ec14afe128b7ba87997e17451c6de03d4941287
   Build = 2

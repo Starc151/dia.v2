@@ -8,6 +8,10 @@ import (
 	"fyne.io/fyne/v2/app"
 	"github.com/Starc151/dia.v2/pkgs/apk"
 )
+// func init() {
+// 	loc, _ := time.LoadLocation("Europe/Moscow")
+// 	time.Local = loc
+// }
 
 func main() {
 	app := app.New()
