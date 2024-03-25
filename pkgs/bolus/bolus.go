@@ -41,6 +41,9 @@ func (g *Glucometr) setBolus() {
 	default:
 		g.fullBolus()
 	}
+	if g.bolus < 0 {
+		g.bolus = 0
+	}
 }
 
 func SetGlucometr(glucose, bUnit string) float64 {

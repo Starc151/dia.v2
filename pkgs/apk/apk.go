@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 	"strconv"
+	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -30,7 +31,16 @@ func (a *Apk) digitBtn(number int) *widget.Button {
 }
 
 func (a *Apk) setGlucometr(text string, field *canvas.Text) {
-	field.Text = text
+	if text != "_" {
+		field.Text = text
+	}
+	if strings.HasPrefix(text, ".") {
+		field.Text = "0" + text
+	}
+	if strings.HasSuffix(text, ".") {
+		field.Text = "0" + text
+	}
+	
 	field.Refresh()
 	a.entry.Text = "_"
 	a.entry.Refresh()

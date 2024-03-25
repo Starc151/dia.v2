@@ -48,6 +48,7 @@ func (a *Apk) loadApk() {
 				),
 			),
 		),
+		container.NewTabItem("HISTORY", container.NewVBox()),
 	)
 
 	a.window.SetContent(tabs)

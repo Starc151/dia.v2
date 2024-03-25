@@ -1,5 +1,5 @@
 // compilation for Android
-// fyne package -os android -icon img/icon.png
+// fyne package -os android -icon img/icon.png -appID ru.dia.android
 
 package main
 
