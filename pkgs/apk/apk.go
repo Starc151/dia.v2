@@ -12,15 +12,15 @@ import (
 )
 
 type glucometr struct {
-	entry     *canvas.Text
-	btn       *widget.Button
-	
+	entry *canvas.Text
+	btn   *widget.Button
+
 	glucose *canvas.Text
 	bUnit   *canvas.Text
 	bolus   *canvas.Text
 
-	window    fyne.Window
-	err error
+	window fyne.Window
+	err    error
 }
 
 func (g *glucometr) digitBtn(number int) *widget.Button {
@@ -30,17 +30,19 @@ func (g *glucometr) digitBtn(number int) *widget.Button {
 	})
 }
 
-func (a *Apk) setGlucometr(text string, field *canvas.Text) {
-	if text != "_" {
-		field.Text = text
+func (g *glucometr) setGlucometr(text string, field *canvas.Text) {
+	if text == "_" {
+		text = "0"
+	}
+	for range text {
+		text = strings.ReplaceAll(text, "..", ".")
 	}
 	if strings.HasPrefix(text, ".") {
-		field.Text = "0" + text
+		text = "0" + text
 	}
-	if strings.HasSuffix(text, ".") {
-		field.Text = "0" + text
-	}
+	text = strings.TrimSuffix(text, ".")
 	
+	field.Text = text
 	field.Refresh()
 	g.entry.Text = "_"
 	g.entry.Refresh()
