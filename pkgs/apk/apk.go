@@ -40,6 +40,7 @@ func (g *glucometr) setGlucometr(text string, field *canvas.Text) {
 	if strings.HasPrefix(text, ".") {
 		text = "0" + text
 	}
+	
 	text = strings.TrimSuffix(text, ".")
 	
 	field.Text = text
@@ -65,7 +66,7 @@ func (g *glucometr) setEntry(text string) {
 	g.entry.Refresh()
 }
 
-func (g *glucometr) clear() {
+func (g *glucometr) clear(btn *widget.Button) {
 	g.entry.Text = "_"
 	g.glucose.Text = "0"
 	g.bUnit.Text = "0"
@@ -74,6 +75,7 @@ func (g *glucometr) clear() {
 	g.glucose.Refresh()
 	g.bUnit.Refresh()
 	g.bolus.Refresh()
+	btn.Enable()
 }
 
 func (g *glucometr) backSpace() {
@@ -105,8 +107,12 @@ func (g *glucometr) setCanvasText(text, position string) *canvas.Text {
 	return canvasText
 }
 
-func (g *glucometr) getBolus() {
-	g.bolus.Text, g.err = bolus.SetGlucometr(g.glucose.Text, g.bUnit.Text)
+func (g *glucometr) getBolus(btn *widget.Button) {
+	if g.glucose.Text != "0" || g.bUnit.Text != "0" {
+		g.bolus.Text, g.err = bolus.SetGlucometr(g.glucose.Text, g.bUnit.Text)
+		btn.Disable()
+	}
+
 	g.bolus.Refresh()
 }
 

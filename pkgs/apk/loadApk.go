@@ -6,6 +6,8 @@ import (
 )
 
 func (g *glucometr) loadApk() {
+	getBolusBtn := g.addBtn("GET BOLUS", nil)
+	getBolusBtn.OnTapped = func() {g.getBolus(getBolusBtn)}
 	border := widget.NewLabel("  ")
 
 	tabs := container.NewAppTabs(
@@ -24,9 +26,9 @@ func (g *glucometr) loadApk() {
 					container.NewGridWithColumns(1,
 						g.bolus),
 					container.NewGridWithColumns(3,
-						g.addBtn("GL", func() { g.setGlucometr(g.entry.Text, g.glucose) }),
-						g.addBtn("BU", func() { g.setGlucometr(g.entry.Text, g.bUnit) }),
-						g.addBtn("C", func() { g.clear() })),
+						g.addBtn("GL", func() {g.setGlucometr(g.entry.Text, g.glucose) }),
+						g.addBtn("BU", func() {g.setGlucometr(g.entry.Text, g.bUnit) }),
+						g.addBtn("C", func() {g.clear(getBolusBtn) })),
 					container.NewGridWithColumns(3,
 						g.digitBtn(7),
 						g.digitBtn(8),
@@ -44,7 +46,7 @@ func (g *glucometr) loadApk() {
 						g.digitBtn(0),
 						g.addBtn(".", func() { g.setEntry(".") })),
 					container.NewGridWithColumns(1,
-						g.addBtn("GET BOLUS", func() {g.getBolus()})),
+						getBolusBtn),
 				),
 			),
 		),
