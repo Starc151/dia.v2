@@ -14,7 +14,6 @@ func (c *Connected) Insert(dataInsert map[string]float64) error {
 	time.Local = loc
 	dbName := "result_bolus"
 	timeNow := uint32(time.Now().Local().Unix())
-	fmt.Print(timeNow)
 	err := c.connect()
     if err != nil {
         return err 

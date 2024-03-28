@@ -49,6 +49,8 @@ func (g *glucometr) setBolus() {
 	if g.bolus < 0 {
 		g.bolus = 0
 	}
+	strBolus := fmt.Sprintf("%.1f", g.bolus)
+	g.bolus, _ = strconv.ParseFloat(strBolus, 64)
 }
 
 func (g *glucometr) insert() {
@@ -66,6 +68,6 @@ func SetGlucometr(glucose, bUnit string) (string, error) {
 	g.glucose, _ = strconv.ParseFloat(glucose, 64)
 	g.bUnit, _ = strconv.ParseFloat(bUnit, 64)
 	g.setBolus()
-	// g.insert()
+	g.insert()
 	return fmt.Sprintf("Bolus: %.1f", g.bolus), nil
 }
