@@ -60,7 +60,7 @@ func (g *glucometr) insert() {
 	glucometrParams["bolus"] = g.bolus
 
 	connectDB := ydb.Connected{}
-	connectDB.Insert(glucometrParams)
+	fmt.Println(connectDB.Insert(glucometrParams))
 }
 
 func SetGlucometr(glucose, bUnit string) (string, error) {
@@ -68,6 +68,8 @@ func SetGlucometr(glucose, bUnit string) (string, error) {
 	g.glucose, _ = strconv.ParseFloat(glucose, 64)
 	g.bUnit, _ = strconv.ParseFloat(bUnit, 64)
 	g.setBolus()
-	g.insert()
+	// g.insert()
+	defer g.insert()
 	return fmt.Sprintf("Bolus: %.1f", g.bolus), nil
+	
 }

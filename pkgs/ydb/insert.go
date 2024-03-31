@@ -10,10 +10,11 @@ import (
 )
 
 func (c *Connected) Insert(dataInsert map[string]float64) error {
-	loc, _ := time.LoadLocation("Europe/Moscow")
-	time.Local = loc
 	dbName := "result_bolus"
-	timeNow := uint32(time.Now().Local().Unix())
+	_, zone := time.Now().Zone()
+	tnu := int(time.Now().Unix())
+	timeNow := uint32(tnu + zone)
+
 	err := c.connect()
     if err != nil {
         return err 

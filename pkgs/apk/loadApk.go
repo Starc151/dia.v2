@@ -50,8 +50,7 @@ func (g *glucometr) loadApk() {
 				),
 			),
 		),
-		container.NewTabItem("HISTORY", container.NewVBox()),
+		container.NewTabItem("HISTORY", getHystory()),
 	)
-
 	g.window.SetContent(tabs)
 }

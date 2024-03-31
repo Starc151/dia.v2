@@ -112,7 +112,6 @@ func (g *glucometr) getBolus(btn *widget.Button) {
 		g.bolus.Text, g.err = bolus.SetGlucometr(g.glucose.Text, g.bUnit.Text)
 		btn.Disable()
 	}
-
 	g.bolus.Refresh()
 }
 
