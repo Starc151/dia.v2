@@ -9,12 +9,12 @@ import (
 	yc "github.com/ydb-platform/ydb-go-yc"
 )
 
-type Connected struct {
+type connected struct {
 	db *ydb.Driver
 	ctx	context.Context
 	cancel context.CancelFunc
 }
-func (c *Connected) connect() error {
+func (c *connected) connect() error {
 	path := "pkgs/ydb/token/"
 	f, err := os.ReadFile(path + "dsn.txt")
 	if err != nil {

@@ -19,6 +19,8 @@ type glucometr struct {
 	bUnit   float64
 	sensiti float64 // Чувствительность к инсулину
 	carb    float64 // Углеводный коэффициент (ед / 1хе)
+
+	err    error
 }
 
 func (g *glucometr) bolusForFood() {
@@ -53,14 +55,16 @@ func (g *glucometr) setBolus() {
 	g.bolus, _ = strconv.ParseFloat(strBolus, 64)
 }
 
-func (g *glucometr) insert() {
+func (g *glucometr) setInsert() error {
 	glucometrParams := make(map[string]float64)
 	glucometrParams["glucose"] = g.glucose
 	glucometrParams["bUnit"] = g.bUnit
 	glucometrParams["bolus"] = g.bolus
 
-	connectDB := ydb.Connected{}
-	fmt.Println(connectDB.Insert(glucometrParams))
+	g.err = ydb.InsertToDb("result_bolus", glucometrParams)
+	return g.err
+	// connectDB := ydb.Connected{}
+	// ydb.c.Insert("result_bolus", glucometrParams)
 }
 
 func SetGlucometr(glucose, bUnit string) (string, error) {
@@ -68,8 +72,6 @@ func SetGlucometr(glucose, bUnit string) (string, error) {
 	g.glucose, _ = strconv.ParseFloat(glucose, 64)
 	g.bUnit, _ = strconv.ParseFloat(bUnit, 64)
 	g.setBolus()
-	// g.insert()
-	defer g.insert()
-	return fmt.Sprintf("Bolus: %.1f", g.bolus), nil
-	
+	g.err = g.setInsert()
+	return fmt.Sprintf("Bolus: %.1f", g.bolus), g.err
 }

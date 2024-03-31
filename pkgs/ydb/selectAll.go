@@ -16,7 +16,7 @@ type entity struct {
 	Bread_Unit      float32
 }
 
-func (c *Connected) SelectAll(dbName string) ([]entity, error) {
+func (c *connected) SelectAll(dbName string) ([]entity, error) {
 	resYDB := []entity{}
 	err := c.connect()
 	if err != nil {
