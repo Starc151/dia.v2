@@ -1,6 +1,7 @@
 package apk
 
 import (
+	"fmt"
 	"image/color"
 	"strconv"
 	"strings"
@@ -9,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Starc151/dia.v2/pkgs/bolus"
+	"github.com/Starc151/dia.v2/pkgs/ydb"
 )
 
 type glucometr struct {
@@ -108,11 +110,22 @@ func (g *glucometr) setCanvasText(text, position string) *canvas.Text {
 }
 
 func (g *glucometr) getBolus(btn *widget.Button) {
-	if g.glucose.Text != "0" || g.bUnit.Text != "0" {
-		g.bolus.Text, g.err = bolus.SetGlucometr(g.glucose.Text, g.bUnit.Text)
-		btn.Disable()
+	if g.glucose.Text == "0" && g.bUnit.Text == "0"{
+		return
 	}
+	glucometrParams := make(map[string]float64)
+	glucometrParams["glucose"], _ = strconv.ParseFloat(g.glucose.Text, 64)
+	glucometrParams["bUnit"], _ = strconv.ParseFloat(g.bUnit.Text, 64)
+	glucometrParams["bolus"] = bolus.SetGlucometr(glucometrParams["glucose"], glucometrParams["bUnit"])
+
+	g.bolus.Text = fmt.Sprintf("Bolus: %.1f", glucometrParams["bolus"])
 	g.bolus.Refresh()
+	btn.Disable()
+
+	g.err = ydb.InsertToDb("result_bolus", glucometrParams)
+	if g.err != nil {
+		fmt.Println(g.err)
+	}
 }
 
 func NewGlucometr(app fyne.App) {
