@@ -5,31 +5,22 @@ import (
 	"reflect"
 )
 
-type structTest struct{
-	i int
-	s string
+type testStruct struct{}
+
+func (tS *testStruct) A() {
+	fmt.Println("Method OK!")
 }
-
-func (sT *structTest) methodS(str string) {
-	fmt.Println(str)
-}
-
-func (sT *structTest) methodI() {
-	fmt.Println("sT.i*2")
-}
-
-func getMethod (name string) {
-	st := structTest{}
-
-	// t := reflect.ValueOf(param)
-	// tl := []reflect.Value{t}
-	// var f *Foo
+func launchMethod(nameMethod string) {
+	st := &testStruct{}
+	validMethod := reflect.ValueOf(st).MethodByName(nameMethod)
+	if !validMethod.IsValid() {
+		return
+	}
 	bar := func() {
-		reflect.ValueOf(st).MethodByName(name).Call(nil)
+		validMethod.Call(nil)
 	}
 	bar()
 }
 func main() {
-	getMethod("methodI")
-	// tet("B", "")
+	launchMethod("A")
 }
