@@ -14,6 +14,22 @@ type connected struct {
 	ctx	context.Context
 	cancel context.CancelFunc
 }
+
+func NewConnect(m func ()) error {
+	connectDB := connected{}
+	tt := 
+	
+	err :=  connectDB.insert(dbName, dataInsert)
+	return err
+}
+
+// func NewConnect(dbName string, dataInsert map[string]float64) error {
+// 	connectDB := connected{}
+	
+// 	err :=  connectDB.insert(dbName, dataInsert)
+// 	return err
+// }
+
 func (c *connected) connect() error {
 	path := "pkgs/ydb/token/"
 	f, err := os.ReadFile(path + "dsn.txt")
@@ -31,3 +47,7 @@ func (c *connected) connect() error {
 	}
 	return nil
 }
+
+
+
+

@@ -16,11 +16,10 @@ type Table struct{
 } 
 
 func Select() []Table {
-    loc, _ := time.LoadLocation("Europe/GMT")
-    time.Local = loc
     dateTime := time.Now()
     resYDB := []Table{}
-    
+
+    connectDB := connected{}
 	db, ctx, cancel := connect()
 	defer cancel()
 	defer db.Close(ctx)

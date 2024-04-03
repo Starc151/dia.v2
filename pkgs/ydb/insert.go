@@ -9,12 +9,6 @@ import (
 	"github.com/ydb-platform/ydb-go-sdk/v3/table/types"
 )
 
-func InsertToDb(dbName string, dataInsert map[string]float64) error {
-	connectDB := connected{}
-	err :=  connectDB.insert(dbName, dataInsert)
-	return err
-}
-
 func (c *connected) insert(dbName string, dataInsert map[string]float64) error {
 	_, zone := time.Now().Zone()
 	tnu := int(time.Now().Unix())

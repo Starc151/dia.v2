@@ -1,0 +1,35 @@
+package main
+
+import (
+	"fmt"
+	"reflect"
+)
+
+type structTest struct{
+	i int
+	s string
+}
+
+func (sT *structTest) methodS(str string) {
+	fmt.Println(str)
+}
+
+func (sT *structTest) methodI() {
+	fmt.Println("sT.i*2")
+}
+
+func getMethod (name string) {
+	st := structTest{}
+
+	// t := reflect.ValueOf(param)
+	// tl := []reflect.Value{t}
+	// var f *Foo
+	bar := func() {
+		reflect.ValueOf(st).MethodByName(name).Call(nil)
+	}
+	bar()
+}
+func main() {
+	getMethod("methodI")
+	// tet("B", "")
+}
