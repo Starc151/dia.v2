@@ -15,14 +15,10 @@ func (c *connected) insert(dataInsert map[string]float64) error {
 	tnu := int(time.Now().Unix())
 	timeNow := uint32(tnu + zone)
 
-	err := c.connect()
-    if err != nil {
-        return err 
-    }
 	defer c.cancel()
 	defer c.db.Close(c.ctx)
 
-	err = c.db.Table().DoTx(c.ctx,
+	c.err = c.db.Table().DoTx(c.ctx,
 		func(ctx context.Context, tx table.TransactionActor) (err error) {
 			res, err := tx.Execute(ctx, `
 			DECLARE $Date_Time AS Datetime;
@@ -48,7 +44,7 @@ func (c *connected) insert(dataInsert map[string]float64) error {
 			return res.Close()
 		}, table.WithIdempotent(),
 	)
-	if err != nil {
+	if c.err != nil {
 		return fmt.Errorf("ошибка записи")
 	}
 	return nil
