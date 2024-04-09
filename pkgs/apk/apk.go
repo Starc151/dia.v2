@@ -122,7 +122,7 @@ func (g *glucometr) getBolus(btn *widget.Button) {
 	g.bolus.Refresh()
 	btn.Disable()
 
-	g.err = ydb.InsertToDb("result_bolus", glucometrParams)
+	g.err = ydb.NewConnect("INSERT", glucometrParams)
 	if g.err != nil {
 		fmt.Println(g.err)
 	}
