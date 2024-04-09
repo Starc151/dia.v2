@@ -3,11 +3,9 @@ package ydb
 import (
 	"context"
 	"fmt"
-	"reflect"
 	"time"
 
 	"github.com/ydb-platform/ydb-go-sdk/v3/table"
-	"github.com/ydb-platform/ydb-go-sdk/v3/table/result"
 	"github.com/ydb-platform/ydb-go-sdk/v3/table/result/named"
 )
 
@@ -18,8 +16,7 @@ type entity struct {
 	Bread_Unit      float32
 }
 
-func (c *connected) SelectAll() ([]entity, error) {
-	resYDB := []entity{}
+func (c *connected) SelectAll() ([][]string, error) {
 	defer c.cancel()
 	defer c.db.Close(c.ctx)
 	result := [][]string{}
@@ -42,34 +39,27 @@ func (c *connected) SelectAll() ([]entity, error) {
 					named.OptionalWithDefault("Current_Glucose", &entity.Current_Glucose),
 					named.OptionalWithDefault("Bread_Unit", &entity.Bread_Unit),
 				)
-				resYDB = append(resYDB, entity)
+				resList := []string{
+					entity.Date_Time.Format("02.01.2006"),
+					entity.Date_Time.Format("15:04"),
+					f32toStr(entity.Current_Glucose, "Glucose"),
+					f32toStr(entity.Bread_Unit, "Bread unit"),
+					f32toStr(entity.Bolus, "Bolus"),
+				}
+				result = append(result, resList)
 			}
 			return res.Err()
 		},
 	)
 	if c.err != nil {
-		return resYDB, c.err
+		return nil, c.err
 	}
-	for i, j := 0, len(resYDB)-1; i < j; i, j = i+1, j-1 {
-        resYDB[i], resYDB[j] = resYDB[j], resYDB[i]
+	for i, j := 0, len(result)-1; i < j; i, j = i+1, j-1 {
+        result[i], result[j] = result[j], result[i]
     }
-	rr := []string{}
-	vv := reflect.ValueOf(resYDB)
-	for k, v := range vv.va{
-		rr = append(rr, "bnm")
-	}
+	return result, nil
+}
 
-	date := resYDB[0].Date_Time.Format("02.01.2006")
-	time := resYDB[0].Date_Time.Format("15:04:05")
-	firstRes := []string{date, time}
-
-	for k := range resYDB {
-		if date != resYDB[k].Date_Time.Format("02.01.2006") {
-			result = append(result, )
-			fmt.Println(resYDB[k].Date_Time.Format("02.01.2006"))
-			date = resYDB[k].Date_Time.Format("02.01.2006")
-		}
-	}
-	// fmt.Println(date)
-	return resYDB, nil
+func f32toStr(num float32, desc string) string {
+	return fmt.Sprintf("%s: %.1f", desc, num)
 }

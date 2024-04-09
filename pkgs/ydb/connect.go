@@ -21,7 +21,6 @@ type connected struct {
 func NewConnect(command string, params map[string]float64) error {
 	cDB := &connected{}
 	cDB.err = cDB.connect()
-	// res := [][]string{}
 	switch command {
 		case "INSERT":
 			cDB.err =  cDB.insert(params)

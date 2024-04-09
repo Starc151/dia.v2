@@ -7,6 +7,6 @@ import (
 )
 
 func getHystory() *fyne.Container {
-	ydb.NewConnect("SELECT", nil)
+	res, _ := ydb.NewConnect("SELECT", nil)
 	return container.NewVBox()
 }
