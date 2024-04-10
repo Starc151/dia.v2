@@ -16,7 +16,9 @@ type entity struct {
 	Bread_Unit      float32
 }
 
-func (c *connected) SelectAll() ([][]string, error) {
+func SelectAll() ([][]string, error) {
+	c := &connected{}
+	c.connect()
 	defer c.cancel()
 	defer c.db.Close(c.ctx)
 	result := [][]string{}
@@ -40,11 +42,11 @@ func (c *connected) SelectAll() ([][]string, error) {
 					named.OptionalWithDefault("Bread_Unit", &entity.Bread_Unit),
 				)
 				resList := []string{
-					entity.Date_Time.Format("02.01.2006"),
+					entity.Date_Time.Format("02.01.06"),
 					entity.Date_Time.Format("15:04"),
 					f32toStr(entity.Current_Glucose, "Glucose"),
-					f32toStr(entity.Bread_Unit, "Bread unit"),
-					f32toStr(entity.Bolus, "Bolus"),
+					f32toStr(entity.Bread_Unit, "XE"),
+					f32toStr(entity.Bolus, "Bl"),
 				}
 				result = append(result, resList)
 			}

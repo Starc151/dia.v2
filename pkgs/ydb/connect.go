@@ -18,19 +18,6 @@ type connected struct {
 	err error
 }
 
-func NewConnect(command string, params map[string]float64) error {
-	cDB := &connected{}
-	cDB.err = cDB.connect()
-	switch command {
-		case "INSERT":
-			cDB.err =  cDB.insert(params)
-		case "SELECT":
-			_, cDB.err =  cDB.SelectAll()
-	}
-	return cDB.err
-}
-
-
 func (c *connected) connect() error {
 	c.dbName = "result_bolus"
 	path := "pkgs/ydb/token/"
