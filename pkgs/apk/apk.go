@@ -20,7 +20,7 @@ type glucometr struct {
 	glucose *canvas.Text
 	bUnit   *canvas.Text
 	bolus   *canvas.Text
-	hystory [][]string
+	history [][]string
 
 	window fyne.Window
 	err    error
@@ -131,7 +131,7 @@ func (g *glucometr) getBolus(btn *widget.Button) {
 
 func NewGlucometr(app fyne.App) {
 	g := glucometr{}
-	g.hystory, g.err = ydb.SelectAll()
+	g.history, g.err = ydb.SelectAll()
 	app.Settings().SetTheme(&myTheme{})
 	g.window = app.NewWindow("Dia")
 	g.entry = g.setCanvasText("_", "right")
