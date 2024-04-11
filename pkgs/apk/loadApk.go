@@ -6,8 +6,15 @@ import (
 )
 
 func (g *glucometr) loadApk() {
+	historyCont := g.lastHistory()
+	historyTab := container.NewTabItem("HISTORY", historyCont)
 	getBolusBtn := g.addBtn("GET BOLUS", nil)
-	getBolusBtn.OnTapped = func() {g.getBolus(getBolusBtn)}
+	getBolusBtn.OnTapped = func() {
+		g.getBolus(getBolusBtn)
+		historyCont.RemoveAll()
+		historyCont.Add(g.lastHistory())
+		historyTab.Content.Refresh()
+	}
 	border := widget.NewLabel("  ")
 
 	tabs := container.NewAppTabs(
@@ -50,7 +57,7 @@ func (g *glucometr) loadApk() {
 				),
 			),
 		),
-		container.NewTabItem("HISTORY", g.lastHistory()),
+		historyTab,
 	)
 	g.window.SetContent(tabs)
 }

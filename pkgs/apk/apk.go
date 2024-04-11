@@ -124,6 +124,7 @@ func (g *glucometr) getBolus(btn *widget.Button) {
 	btn.Disable()
 
 	g.err = ydb.Insert(glucometrParams)
+	g.history, g.err = ydb.SelectAll()
 	if g.err != nil {
 		fmt.Println(g.err)
 	}
