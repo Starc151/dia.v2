@@ -7,3 +7,5 @@ Versions:
 
 1.0.0 - Basic functionality for calculating the bolus
 1.1.0 - Fix font Buttons
+2.0.0 - Added saving of the last 4 analyses
+2.0.1 - Fix compilation command
