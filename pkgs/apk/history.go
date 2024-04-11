@@ -10,21 +10,20 @@ import (
 )
 
 func (g *glucometr) lastHistory() *fyne.Container {
-	date := strToCNT(g.history[0][0])
-	date.Alignment = fyne.TextAlignCenter
-	resBox := container.NewVBox(date)
-
+	resBox := container.NewVBox()
+	curentDate := ""
 	for i := 0; i < 4 && i < len(g.history); i++ {
+		date := strToCNT(g.history[i][0])
+		date.Alignment = fyne.TextAlignCenter
+		if curentDate != date.Text {
+			resBox.Add(date)
+			curentDate = date.Text
+		}
 		tempAssay  := strToCNT(fmt.Sprintf("%s", g.history[i][1:3]))
 		resBox.Add(tempAssay)
 		tempAssay = strToCNT(fmt.Sprintf("%s", g.history[i][3:]))
 		resBox.Add(tempAssay)
 		resBox.Add(strToCNT(""))
-		if g.history[i][0] != g.history[i+1][0] {
-			date = strToCNT(g.history[i+1][0])
-			date.Alignment = fyne.TextAlignCenter
-			resBox.Add(date)
-		}
 	}
 	return resBox
 }
