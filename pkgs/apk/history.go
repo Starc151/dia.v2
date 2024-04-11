@@ -13,7 +13,8 @@ func (g *glucometr) lastHistory() *fyne.Container {
 	date := strToCNT(g.history[0][0])
 	date.Alignment = fyne.TextAlignCenter
 	resBox := container.NewVBox(date)
-	for i := 0; i <= 10; i++ {
+
+	for i := 0; i < 4 && i < len(g.history); i++ {
 		tempAssay  := strToCNT(fmt.Sprintf("%s", g.history[i][1:3]))
 		resBox.Add(tempAssay)
 		tempAssay = strToCNT(fmt.Sprintf("%s", g.history[i][3:]))

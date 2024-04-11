@@ -16,9 +16,8 @@ func Insert(dataInsert map[string]float64) error {
 	defer c.db.Close(c.ctx)
 	dbName := c.dbName
 
-	_, zone := time.Now().Zone()
 	tnu := int(time.Now().Unix())
-	timeNow := uint32(tnu + zone)
+	timeNow := uint32(tnu)
 
 	c.err = c.db.Table().DoTx(c.ctx,
 		func(ctx context.Context, tx table.TransactionActor) (err error) {
