@@ -11,7 +11,10 @@ import (
 
 func Insert(dataInsert map[string]float64) error {
 	c := &connected{}
-	c.connect()
+	c.err = c.connect()
+	if c.err != nil {
+		return c.err
+	}
 	defer c.cancel()
 	defer c.db.Close(c.ctx)
 	dbName := c.dbName

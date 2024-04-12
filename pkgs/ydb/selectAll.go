@@ -18,7 +18,10 @@ type entity struct {
 
 func SelectAll() ([][]string, error) {
 	c := &connected{}
-	c.connect()
+	c.err = c.connect()
+	if c.err != nil {
+		return nil, c.err
+	}
 	defer c.cancel()
 	defer c.db.Close(c.ctx)
 	result := [][]string{}
