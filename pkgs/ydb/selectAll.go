@@ -18,7 +18,7 @@ type entity struct {
 
 func SelectAll() ([][]string, error) {
 	c := &connected{}
-	c.err = c.connect()
+	c.connect()
 	if c.err != nil {
 		return nil, c.err
 	}

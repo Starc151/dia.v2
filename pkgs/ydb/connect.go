@@ -18,22 +18,19 @@ type connected struct {
 	err error
 }
 
-func (c *connected) connect() error {
+func (c *connected) connect() {
 	c.dbName = "result_bolus"
 	path := "pkgs/ydb/token/"
-	f, err := os.ReadFile(path + "dsn.txt")
-	if err != nil {
-		return fmt.Errorf("ошибка файла ключей")
-	}
+	f, _ := os.ReadFile(path + "dsn.txt")
+	
 	dsn := string(f)
 	
 	c.ctx, c.cancel = context.WithCancel(context.Background())
-	c.db, err = ydb.Open(c.ctx, dsn,
+	c.db, c.err = ydb.Open(c.ctx, dsn,
 		yc.WithServiceAccountKeyFileCredentials(path + "authorized_key.txt"),
+		// yc.WithServiceAccountKeyCredentials(``),
 	)
-	if err != nil {
-		return fmt.Errorf("нет соединения")
+	if c.err != nil {
+		c.err = fmt.Errorf("нет соединения")
 	}
-	return nil
 }
-

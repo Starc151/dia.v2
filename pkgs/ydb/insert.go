@@ -11,7 +11,7 @@ import (
 
 func Insert(dataInsert map[string]float64) error {
 	c := &connected{}
-	c.err = c.connect()
+	c.connect()
 	if c.err != nil {
 		return c.err
 	}
