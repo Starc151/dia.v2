@@ -10,6 +10,9 @@ import (
 )
 
 func (g *glucometr) lastHistory() *fyne.Container {
+	if g.err != nil {
+		return container.NewVBox(strToCNT(g.err.Error()))
+	}
 	resBox := container.NewVBox()
 	curentDate := ""
 	for i := 0; i < 4 && i < len(g.history); i++ {

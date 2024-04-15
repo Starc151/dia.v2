@@ -8,6 +8,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Starc151/dia.v2/pkgs/bolus"
 	"github.com/Starc151/dia.v2/pkgs/ydb"
@@ -126,7 +127,7 @@ func (g *glucometr) getBolus(btn *widget.Button) {
 	g.err = ydb.Insert(glucometrParams)
 	g.history, g.err = ydb.SelectAll()
 	if g.err != nil {
-		fmt.Println(g.err)
+		dialog.ShowError(g.err, g.window)
 	}
 }
 
