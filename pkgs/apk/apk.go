@@ -74,7 +74,7 @@ func (g *glucometr) clear(btn *widget.Button) {
 	g.entry.Text = "_"
 	g.glucose.Text = "0"
 	g.bUnit.Text = "0"
-	g.bolus.Text = ""
+	g.bolus.Text = "0"
 	g.entry.Refresh()
 	g.glucose.Refresh()
 	g.bUnit.Refresh()
