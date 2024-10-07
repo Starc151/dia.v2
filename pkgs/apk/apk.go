@@ -8,7 +8,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
-	// "fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Starc151/dia.v2/pkgs/bolus"
 	"github.com/Starc151/dia.v2/pkgs/ydb"
@@ -100,7 +100,7 @@ func (g *glucometr) setCanvasText(text, position string) *canvas.Text {
 	return canvasText
 }
 
-func (g *glucometr) getBolus(btn *widget.Button) {
+func (g *glucometr) getBolus() { //(btn *widget.Button) {
 	if g.glucose.Text == "0" && g.bUnit.Text == "0" && g.bolus.Text == "0"{
 		return
 	}
@@ -111,14 +111,14 @@ func (g *glucometr) getBolus(btn *widget.Button) {
 
 	g.bolus.Text = fmt.Sprintf("%.1f", glucometrParams["bolus"])
 	g.bolus.Refresh()
-	btn.Text = "SAVE"
-	btn.Disable()
+}
 
-	// g.err = ydb.Insert(glucometrParams)
-	// g.history, g.err = ydb.SelectAll()
-	// if g.err != nil {
-	// 	dialog.ShowError(g.err, g.window)
-	// }
+func (g *glucometr) save() {
+	g.err = ydb.Insert(glucometrParams)
+	g.history, g.err = ydb.SelectAll()
+	if g.err != nil {
+		dialog.ShowError(g.err, g.window)
+	}
 }
 
 func NewGlucometr(app fyne.App) {

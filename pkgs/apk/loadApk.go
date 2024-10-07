@@ -10,11 +10,19 @@ func (g *glucometr) loadApk() {
 	historyTab := container.NewTabItem("HISTORY", historyCont)
 	getBolusBtn := g.addBtn("GET BOLUS", nil)
 	getBolusBtn.OnTapped = func() {
-		g.getBolus(getBolusBtn)
+		g.getBolus()//(getBolusBtn)
+
+	}
+
+	saveBtn := g.addBtn("SAVE", nil)
+	saveBtn.OnTapped = func() {
+		g.save()
 		historyCont.RemoveAll()
 		historyCont.Add(g.lastHistory())
 		historyTab.Content.Refresh()
+		saveBtn.Disable()
 	}
+
 	border := widget.NewLabel("  ")
 
 	tabs := container.NewAppTabs(
@@ -55,7 +63,7 @@ func (g *glucometr) loadApk() {
 						g.addBtn(".", func() { g.setEntry(".") })),
 					container.NewGridWithColumns(2,
 						getBolusBtn,
-						g.addBtn("OK", nil)),
+						saveBtn),
 				),
 			),
 		),
