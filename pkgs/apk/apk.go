@@ -70,7 +70,7 @@ func (g *glucometr) setEntry(text string) {
 	g.entry.Refresh()
 }
 
-func (g *glucometr) clear(btn *widget.Button) {
+func (g *glucometr) clear(btn... *widget.Button) {
 	g.entry.Text = "_"
 	g.glucose.Text = "0"
 	g.bUnit.Text = "0"
@@ -79,7 +79,9 @@ func (g *glucometr) clear(btn *widget.Button) {
 	g.glucose.Refresh()
 	g.bUnit.Refresh()
 	g.bolus.Refresh()
-	btn.Enable()
+	for i := 0; i < len(btn); i++ {
+		btn[i].Enable()
+	}
 }
 
 func setAlign(position string) int {
@@ -100,20 +102,21 @@ func (g *glucometr) setCanvasText(text, position string) *canvas.Text {
 	return canvasText
 }
 
-func (g *glucometr) getBolus() { //(btn *widget.Button) {
-	if g.glucose.Text == "0" && g.bUnit.Text == "0" && g.bolus.Text == "0"{
-		return
-	}
-	glucometrParams := make(map[string]float64)
-	glucometrParams["glucose"], _ = strconv.ParseFloat(g.glucose.Text, 64)
-	glucometrParams["bUnit"], _ = strconv.ParseFloat(g.bUnit.Text, 64)
-	glucometrParams["bolus"] = bolus.SetGlucometr(glucometrParams["glucose"], glucometrParams["bUnit"])
+func (g *glucometr) getBolus() {
+	glucose := strToFl64(g.glucose.Text)
+	bUnit := strToFl64(g.bUnit.Text)
+	bolus := bolus.SetGlucometr(glucose, bUnit)
 
-	g.bolus.Text = fmt.Sprintf("%.1f", glucometrParams["bolus"])
+	g.bolus.Text = fmt.Sprintf("%.1f", bolus)
 	g.bolus.Refresh()
 }
 
 func (g *glucometr) save() {
+	glucometrParams := make(map[string]float64, 3)
+	glucometrParams["glucose"], _ = strconv.ParseFloat(g.glucose.Text, 64)
+	glucometrParams["bUnit"], _ = strconv.ParseFloat(g.bUnit.Text, 64)
+	glucometrParams["bolus"], _ = strconv.ParseFloat(g.bolus.Text, 64)
+
 	g.err = ydb.Insert(glucometrParams)
 	g.history, g.err = ydb.SelectAll()
 	if g.err != nil {
@@ -133,4 +136,16 @@ func NewGlucometr(app fyne.App) {
 
 	g.loadApk()
 	g.window.Show()
+}
+
+func strToFl64(str string) float64 {
+	f, _ := strconv.ParseFloat(str, 64)
+	return f
+}
+
+func (g *glucometr) checkNullParam() bool {
+	if g.glucose.Text == "0" && g.bUnit.Text == "0" && g.bolus.Text == "0"{
+		return false
+	}
+	return true
 }
