@@ -28,7 +28,6 @@ func (c *connected) connect() {
 	c.ctx, c.cancel = context.WithCancel(context.Background())
 	c.db, c.err = ydb.Open(c.ctx, dsn,
 		yc.WithServiceAccountKeyFileCredentials(path + "authorized_key.txt"),
-		// yc.WithServiceAccountKeyCredentials(``),
 	)
 	if c.err != nil {
 		c.err = fmt.Errorf("нет соединения")
