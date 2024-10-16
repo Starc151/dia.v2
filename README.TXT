@@ -5,8 +5,9 @@ At the moment, the app is only for Android. Perhaps there will be an iOS version
 
 Versions:
 
-1.0.0 - Basic functionality for calculating the bolus
-1.1.0 - Fix font Buttons
-2.0.0 - Added saving of the last 4 analyses
-2.0.1 - Fix compilation command
-2.0.2 - Fix connection error
+1.0.0 - Basic functionality for calculating the bolus.
+1.1.0 - Fix font Buttons.
+2.0.0 - Added saving of the last 4 analyses.
+2.0.1 - Fix compilation command.
+2.0.2 - Fix connection error.
+3.0.0 - Added bolus editing. The calculation and recording buttons are separated.

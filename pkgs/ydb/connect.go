@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	
 	"github.com/ydb-platform/ydb-go-sdk/v3"
 	yc "github.com/ydb-platform/ydb-go-yc"
 )
